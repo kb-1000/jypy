@@ -1,1 +1,9 @@
+*.bc
 *.class
+*.i
+*.ii
+*.ll
+*.o
+*.s
+*.so
+com_github_kb1000_jypy_*.h
