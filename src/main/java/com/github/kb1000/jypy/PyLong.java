@@ -13,6 +13,10 @@ public class PyLong extends PyObject {
         return new PyLong(bigInteger); // TODO(kb1000): add pre-made objects for low numbers
     }
 
+    public static PyLong from(long value) {
+        return new PyLong(BigInteger.valueOf(value));
+    }
+
     @Override
     public PyObject __add__(PyObject other) {
         if (other instanceof PyLong) {

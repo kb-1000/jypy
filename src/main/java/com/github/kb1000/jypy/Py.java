@@ -10,6 +10,18 @@ public final class Py {
     public static PyObject pyReWrap(Object it) throws JyPyException {
         if (it instanceof BigInteger) {
             return PyLong.from((BigInteger) it);
+        } else if (it instanceof Integer) {
+            return PyLong.from((Integer) it);
+        } else if (it instanceof Short) {
+            return PyLong.from((Short) it);
+        } else if (it instanceof Long) {
+            return PyLong.from((Long) it);
+        } else if (it instanceof Byte) {
+            return PyLong.from((Byte) it);
+        } else if (it instanceof Double) {
+            return PyFloat.from((Double) it);
+        } else if (it instanceof Float) {
+            return PyFloat.from((Float) it);
         }
         return null; // FIXME(kb1000)
     }
