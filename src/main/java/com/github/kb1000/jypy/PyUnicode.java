@@ -1,7 +1,7 @@
 package com.github.kb1000.jypy;
 
 //FIXME(kb1000): This class does not support UTF-32 chars without surrogates, while they are always natively supported in newer Python 3 versions.
-public class PyUnicode {
+public class PyUnicode extends PyObject {
     public final String string;
     public static final PyType TYPE = null; // FIXME(kb1000)
     private PyUnicode(String string) {

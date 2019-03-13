@@ -8,7 +8,9 @@ public final class Py {
     }
 
     public static PyObject pyReWrap(Object it) throws JyPyException {
-        if (it instanceof BigInteger) {
+        if (it == null) {
+            return None;
+        } else if (it instanceof BigInteger) {
             return PyLong.from((BigInteger) it);
         } else if (it instanceof Integer) {
             return PyLong.from((Integer) it);
@@ -22,9 +24,13 @@ public final class Py {
             return PyFloat.from((Double) it);
         } else if (it instanceof Float) {
             return PyFloat.from((Float) it);
+        } else if (it instanceof String) {
+            return PyUnicode.from((String) it);
         }
         return null; // FIXME(kb1000)
     }
 
     public static final PyNotImplemented NotImplemented = PyNotImplemented.INSTANCE;
+    public static final PyNone None = PyNone.INSTANCE;
+    public static final PyEllipsis Ellipsis = PyEllipsis.INSTANCE;
 }
