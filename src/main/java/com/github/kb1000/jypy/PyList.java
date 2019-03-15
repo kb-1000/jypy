@@ -1,6 +1,9 @@
 package com.github.kb1000.jypy;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 import com.github.kb1000.jypy.annotations.NotInPython;
@@ -18,11 +21,17 @@ public class PyList extends PyObject {
     }
 
     public PyList(Iterable<? extends PyObject> iterable) {
-        this.list = Collections.checkedList(new ArrayList<PyObject>(iterable), PyObject.class);
+        if (iterable instanceof Collection<?>) {
+            this.list = Collections.checkedList(new ArrayList<PyObject>((Collection<? extends PyObject>) iterable), PyObject.class);
+        } else {
+            List<PyObject> list = Collections.checkedList(new ArrayList<PyObject>(), PyObject.class);
+            iterable.forEach(list::add);
+            this.list = list;
+        }
     }
 
     public PyList(PyObject... objects) {
-        this.list = Collections.checkedList(new ArrayList<PyObject>(objects), PyObject.class);
+        this.list = Collections.checkedList(new ArrayList<PyObject>(Arrays.asList(objects)), PyObject.class);
     }
 
     public PyList(PyObject iterable) {
@@ -36,6 +45,6 @@ public class PyList extends PyObject {
 
     @VoidToNone
     public void extend(PyObject other) {
-        list.addAll(other);
+        //list.addAll(other); // FIXME(kb1000)
     }
 }
