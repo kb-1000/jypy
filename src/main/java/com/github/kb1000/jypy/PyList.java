@@ -1,10 +1,6 @@
 package com.github.kb1000.jypy;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
 import com.github.kb1000.jypy.annotations.NotInPython;
 import com.github.kb1000.jypy.annotations.VoidToNone;
@@ -20,6 +16,7 @@ public class PyList extends PyObject {
         this.list = Collections.checkedList(new ArrayList<PyObject>(), PyObject.class);
     }
 
+    @SuppressWarnings("unchecked")
     public PyList(Iterable<? extends PyObject> iterable) {
         if (iterable instanceof Collection<?>) {
             this.list = Collections.checkedList(new ArrayList<PyObject>((Collection<? extends PyObject>) iterable), PyObject.class);

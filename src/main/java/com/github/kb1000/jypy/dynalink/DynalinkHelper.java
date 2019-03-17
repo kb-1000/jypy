@@ -1,9 +1,6 @@
 package com.github.kb1000.jypy.dynalink;
 
-import jdk.dynalink.NamedOperation;
-import jdk.dynalink.NamespaceOperation;
-import jdk.dynalink.Operation;
-import jdk.dynalink.StandardOperation;
+import jdk.dynalink.*;
 
 public class DynalinkHelper {
     private DynalinkHelper() {
@@ -19,5 +16,12 @@ public class DynalinkHelper {
                 return (StandardOperation) operation; // throws ClassCastException if unsupported type
             }
         }
+    }
+
+    public static Namespace[] getOperationNamespaces(Operation operation) {
+        if (operation instanceof NamedOperation) {
+            operation = ((NamedOperation) operation).getBaseOperation();
+        }
+        return ((NamespaceOperation) operation).getNamespaces();
     }
 }

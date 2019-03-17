@@ -30,4 +30,8 @@ public class PyObject {
     public PyObject __call__(PyList args, PyDict kwargs) throws JyPyException { // FIXME(kb1000): Change to PyTuple after creating it
         throw new JyPyException(); // FIXME(kb1000): Add CPython-like exception
     }
+
+    public PyObject __getitem__(PyObject item) throws JyPyException {
+        throw new JyPyException(); // FIXME(kb1000): Add CPython-like exception
+    }
 }

@@ -3,13 +3,14 @@ package com.github.kb1000.jypy.dynalink;
 import java.lang.invoke.MethodHandles;
 import java.util.function.Supplier;
 
+import jdk.dynalink.Namespace;
 import jdk.dynalink.Operation;
 import jdk.dynalink.StandardOperation;
 import jdk.dynalink.linker.*;
 
 import com.github.kb1000.jypy.PyObject;
 
-public class JyPyDynamicLinker implements GuardingDynamicLinker, TypeBasedGuardingDynamicLinker, GuardingTypeConverterFactory {
+public class JyPyDynamicLinker implements TypeBasedGuardingDynamicLinker, GuardingTypeConverterFactory {
     @Override
     public GuardedInvocation getGuardedInvocation(LinkRequest request, LinkerServices services) {
         if (!(request.getReceiver() instanceof PyObject)) {
@@ -18,7 +19,8 @@ public class JyPyDynamicLinker implements GuardingDynamicLinker, TypeBasedGuardi
 
         Operation operation = request.getCallSiteDescriptor().getOperation();
         if (DynalinkHelper.getStandardOperation(operation) == StandardOperation.CALL) {
-            return null;
+            Namespace[] namespaces = DynalinkHelper.getOperationNamespaces(operation);
+
         }
 
         return null;
