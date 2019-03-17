@@ -1,7 +1,10 @@
 *.bc
 *.class
 *.i
+.idea/*
+!.idea/codeStyles
 *.ii
+*.iml
 *.ll
 *.o
 *.s
