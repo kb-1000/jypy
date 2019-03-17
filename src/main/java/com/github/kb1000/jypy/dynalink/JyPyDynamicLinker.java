@@ -3,18 +3,24 @@ package com.github.kb1000.jypy.dynalink;
 import java.lang.invoke.MethodHandles;
 import java.util.function.Supplier;
 
-import jdk.dynalink.linker.GuardedInvocation;
-import jdk.dynalink.linker.GuardingDynamicLinker;
-import jdk.dynalink.linker.GuardingTypeConverterFactory;
-import jdk.dynalink.linker.LinkRequest;
-import jdk.dynalink.linker.LinkerServices;
-import jdk.dynalink.linker.TypeBasedGuardingDynamicLinker;
+import jdk.dynalink.Operation;
+import jdk.dynalink.StandardOperation;
+import jdk.dynalink.linker.*;
 
 import com.github.kb1000.jypy.PyObject;
 
 public class JyPyDynamicLinker implements GuardingDynamicLinker, TypeBasedGuardingDynamicLinker, GuardingTypeConverterFactory {
     @Override
     public GuardedInvocation getGuardedInvocation(LinkRequest request, LinkerServices services) {
+        if (!(request.getReceiver() instanceof PyObject)) {
+            return null;
+        }
+
+        Operation operation = request.getCallSiteDescriptor().getOperation();
+        if (DynalinkHelper.getStandardOperation(operation) == StandardOperation.CALL) {
+            return null;
+        }
+
         return null;
     }
 
