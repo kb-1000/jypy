@@ -5,6 +5,7 @@
 !.idea/codeStyles
 *.ii
 *.iml
+*.js
 *.ll
 *.o
 *.s
