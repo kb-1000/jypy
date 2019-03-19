@@ -10,25 +10,25 @@ public class PyList extends PyObject {
      * You may modify this {@link List}, but you may not replace it.
      */
     @NotInPython(pyObject = true)
-    public final List<PyObject> list;
+    public final List<Object> list;
 
     public PyList() {
-        this.list = Collections.checkedList(new ArrayList<PyObject>(), PyObject.class);
+        this.list = new ArrayList<>();
     }
 
     @SuppressWarnings("unchecked")
-    public PyList(Iterable<? extends PyObject> iterable) {
+    public PyList(Iterable<? extends Object> iterable) {
         if (iterable instanceof Collection<?>) {
-            this.list = Collections.checkedList(new ArrayList<PyObject>((Collection<? extends PyObject>) iterable), PyObject.class);
+            this.list = new ArrayList<Object>((Collection<? extends Object>) iterable);
         } else {
-            List<PyObject> list = Collections.checkedList(new ArrayList<PyObject>(), PyObject.class);
+            List<Object> list = new ArrayList<Object>();
             iterable.forEach(list::add);
             this.list = list;
         }
     }
 
-    public PyList(PyObject... objects) {
-        this.list = Collections.checkedList(new ArrayList<PyObject>(Arrays.asList(objects)), PyObject.class);
+    public PyList(Object... objects) {
+        this.list = new ArrayList<Object>(Arrays.asList(objects));
     }
 
     public PyList(PyObject iterable) {
@@ -36,7 +36,7 @@ public class PyList extends PyObject {
     }
 
     @VoidToNone
-    public void append(PyObject value) {
+    public void append(Object value) {
         list.add(value);
     }
 

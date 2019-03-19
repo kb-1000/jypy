@@ -1,29 +1,35 @@
 package com.github.kb1000.jypy.codegen;
 
-import com.github.kb1000.jypy.PyJavaWrapperObject;
-import com.github.kb1000.jypy.common.ClassMap;
-import org.objectweb.asm.ClassWriter;
+import java.lang.reflect.Modifier;
+import java.util.HashMap;
 
-public class PyJavaWrapperGenerator {
+import com.github.kb1000.jypy.JyPyException;
+
+public final class PyJavaWrapperGenerator {
     private PyJavaWrapperGenerator() {
+        throw new UnsupportedOperationException();
     }
 
-    private static final ClassMap<Class<? extends PyJavaWrapperObject>> cache = new ClassMap<>() {
-        @Override
-        protected Class<? extends PyJavaWrapperObject> computeValue(Class<?> clazz) {
-            return makeWrapperClass(clazz);
+    private final HashMap<Class<?>[], Class<?>> cache = new HashMap<>(); // FIXME(kb1000): class leak, not preventable by WeakHashMap though
+
+    public final Class<?> getClassForSuperclasses(Class<?>[] classes) throws JyPyException {
+        Class<?> superclass = null;
+        for (Class<?> clazz: classes) {
+            if (superclass == null && (!clazz.isInterface())) {
+                superclass = clazz;
+            }
+            else if ((!clazz.isInterface()) /* implies superclass is not null */) {
+                if (superclass.isAssignableFrom(clazz)) {
+                    superclass = clazz;
+                } else {
+                    throw new JyPyException(); // new PyTypeError("Error when calling the metaclass bases\nno multiple inheritance for Java classes: " + clazz.getName() + " and " + superclass.getName()) // FIXME(kb1000): add Jython-like exception
+                }
+            }
         }
-    };
+        if (Modifier.isFinal(superclass.getModifiers())) {
+            throw new JyPyException(); // FIXME(kb1000): add Jython-like exception
+        }
 
-    public static Class<? extends PyJavaWrapperObject> getWrapperClass(Class<?> clazz) {
-        return null;
-    }
-
-    private static byte[] generateWrapperClass(Class<?> clazz) {
-        return null;
-    }
-
-    private static Class<? extends PyJavaWrapperObject> makeWrapperClass(Class<?> clazz) {
-        return null;
+        return null; // FIXME(kb1000)
     }
 }
