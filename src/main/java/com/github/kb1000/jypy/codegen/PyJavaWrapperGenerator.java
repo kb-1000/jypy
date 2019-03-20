@@ -35,7 +35,7 @@ public final class PyJavaWrapperGenerator {
         }
 
         @SuppressWarnings("unchecked") // Why the hell is this even then unchecked when creating an array of Stream<Class<?>> instead...
-	Class<?>[] intermediateNewClasses = Arrays.stream((Stream<Class<?>>[]) new Stream<?>[] {(Stream<Class<?>>) Optional.ofNullable(superclass).stream(), Arrays.stream(classes).filter(Class::isInterface).distinct() }).flatMap(stream -> stream).toArray(Constants.newClassArray);
+        Class<?>[] intermediateNewClasses = Arrays.stream((Stream<Class<?>>[]) new Stream<?>[] {(Stream<Class<?>>) Optional.ofNullable(superclass).stream(), Arrays.stream(classes).filter(Class::isInterface).distinct() }).flatMap(stream -> stream).toArray(Constants.newClassArray);
 
         {
             int len = intermediateNewClasses.length;

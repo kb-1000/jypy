@@ -73,7 +73,7 @@ JNIEXPORT jboolean JNICALL Java_com_github_kb1000_jypy_Py{name}_register{name}Si
     registered{name} = true;
     if (!instance) {{
         env->ThrowNew(env->FindClass("java/lang/NullPointerException"), "instance param can't be null");
-	return false;
+        return false;
     }}
     if (!env->IsInstanceOf(instance, clazz)) {{
         env->ThrowNew(env->FindClass("java/lang/ClassCastException"), "instance param is not a Py{name}");

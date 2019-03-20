@@ -18,7 +18,7 @@ class PyFloat extends PyObject {
         }
         else if (other instanceof PyLong) {
             double otherDouble = ((PyLong) other).bigInteger.doubleValue();
-	    if (Double.isInfinite(otherDouble)) {
+            if (Double.isInfinite(otherDouble)) {
                 throw new JyPyException(); // new PyOverflow("int too large to convert to float") // FIXME(kb1000)
             }
             return from(value + otherDouble);

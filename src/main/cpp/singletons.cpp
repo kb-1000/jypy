@@ -19,7 +19,7 @@ JNIEXPORT jboolean JNICALL Java_com_github_kb1000_jypy_PyEllipsis_registerEllips
     registeredEllipsis = true;
     if (!instance) {
         env->ThrowNew(env->FindClass("java/lang/NullPointerException"), "instance param can't be null");
-	return false;
+        return false;
     }
     if (!env->IsInstanceOf(instance, clazz)) {
         env->ThrowNew(env->FindClass("java/lang/ClassCastException"), "instance param is not a PyEllipsis");
@@ -36,7 +36,7 @@ JNIEXPORT jboolean JNICALL Java_com_github_kb1000_jypy_PyNone_registerNoneSingle
     registeredNone = true;
     if (!instance) {
         env->ThrowNew(env->FindClass("java/lang/NullPointerException"), "instance param can't be null");
-	return false;
+        return false;
     }
     if (!env->IsInstanceOf(instance, clazz)) {
         env->ThrowNew(env->FindClass("java/lang/ClassCastException"), "instance param is not a PyNone");
@@ -53,7 +53,7 @@ JNIEXPORT jboolean JNICALL Java_com_github_kb1000_jypy_PyNotImplemented_register
     registeredNotImplemented = true;
     if (!instance) {
         env->ThrowNew(env->FindClass("java/lang/NullPointerException"), "instance param can't be null");
-	return false;
+        return false;
     }
     if (!env->IsInstanceOf(instance, clazz)) {
         env->ThrowNew(env->FindClass("java/lang/ClassCastException"), "instance param is not a PyNotImplemented");
