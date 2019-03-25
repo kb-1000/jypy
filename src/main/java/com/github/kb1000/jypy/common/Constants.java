@@ -9,6 +9,7 @@ public final class Constants {
 
     public static final Predicate<?> nonNullPredicate = Objects::nonNull;
     public static final IntFunction<Class<?>[]> newClassArray = Class<?>[]::new;
+    public static final IntFunction<String[]> newStringArray = String[]::new;
 
     @SuppressWarnings("unchecked")
     public static <T> Predicate<T> nonNullPredicate() {
