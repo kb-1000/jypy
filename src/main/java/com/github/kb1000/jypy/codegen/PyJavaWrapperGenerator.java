@@ -75,7 +75,7 @@ public final class PyJavaWrapperGenerator {
     }
 
     private static String getClassName(Class<?>[] classes) {
-        StringJoiner joiner = new StringJoiner("_", PyJavaWrapperGenerator.class.getPackage().getName() + ".generated.javawrapper", "");
+        StringJoiner joiner = new StringJoiner("_", PyJavaWrapperGenerator.class.getPackage().getName() + ".generated.javawrapper.", "");
         for (final Class<?> clazz: classes) {
             joiner.add(Common.getBinaryName(clazz).replace(';', '_'));
         }
