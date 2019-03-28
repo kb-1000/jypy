@@ -1,6 +1,8 @@
 package com.github.kb1000.jypy.codegen;
 
+import java.lang.reflect.Constructor;
 import java.lang.reflect.Modifier;
+import java.lang.reflect.Parameter;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Optional;
@@ -8,10 +10,12 @@ import java.util.StringJoiner;
 import java.util.stream.Stream;
 
 import com.github.kb1000.jypy.JyPyException;
+import com.github.kb1000.jypy.PyObject;
 import com.github.kb1000.jypy.common.Constants;
 import com.github.kb1000.jypy.common.ThrowingHelpers;
 
 import org.objectweb.asm.ClassWriter;
+import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.Type;
 
@@ -58,8 +62,6 @@ public final class PyJavaWrapperGenerator {
         Class<?>[] newClasses = Arrays.stream(intermediateNewClasses).filter(Constants.nonNullPredicate()).toArray(Constants.newClassArray);
         Arrays.sort(newClasses, 1, newClasses.length, (c1, c2) -> c1.getName().compareTo(c2.getName()));
 
-        System.out.println(Arrays.toString(newClasses));
-
         synchronized (cache) {
             return cache.computeIfAbsent(newClasses, ThrowingHelpers.unchecked(PyJavaWrapperGenerator::makeClass));
         }
@@ -84,7 +86,25 @@ public final class PyJavaWrapperGenerator {
 
     private static byte[] generateClass(String name, Class<?>[] classes) {
         final ClassWriter cw = new ClassWriter(ClassWriter.COMPUTE_MAXS | ClassWriter.COMPUTE_FRAMES);
-        cw.visit(Opcodes.V1_8, Opcodes.ACC_PUBLIC, name, null, Type.getInternalName(classes[0]), Arrays.stream(classes).skip(1).map(Type::getDescriptor).toArray(Constants.newStringArray));
+        String superTypeName = Type.getInternalName(classes[0]);
+        cw.visit(Opcodes.V1_8, Opcodes.ACC_PUBLIC, name, null, superTypeName, Arrays.stream(classes).skip(1).map(Type::getDescriptor).toArray(Constants.newStringArray));
+        for (final Constructor<?> constructor: classes[0].getDeclaredConstructors()) {
+            final MethodVisitor mw = cw.visitMethod(Opcodes.ACC_PUBLIC, "<init>", Type.getMethodDescriptor(Type.getType(void.class), Stream.of(Stream.of(PyObject.class), Arrays.stream(constructor.getParameterTypes())).flatMap(stream -> stream).map(Type::getType).toArray(Type[]::new)), null, null);
+            mw.visitParameter("$wrappedPyObject", Opcodes.ACC_FINAL);
+            for (final Parameter parameter: constructor.getParameters()) {
+                mw.visitParameter(parameter.getName(), Opcodes.ACC_FINAL);
+            }
+            mw.visitCode();
+            int i = 2;
+            for (Class<?> type: constructor.getParameterTypes()) {
+                mw.visitVarInsn(Type.getType(type).getOpcode(Opcodes.ILOAD), i);
+                i++;
+            }
+            mw.visitMethodInsn(Opcodes.INVOKESPECIAL, superTypeName, "<init>", Type.getConstructorDescriptor(constructor), false);
+            mw.visitInsn(Opcodes.RETURN);
+            mw.visitMaxs(-1, -1);
+            mw.visitEnd();
+        }
         cw.visitEnd();
         return cw.toByteArray();
     }
