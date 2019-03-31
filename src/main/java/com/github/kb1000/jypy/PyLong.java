@@ -5,7 +5,7 @@ import java.math.BigInteger;
 public class PyLong extends PyObject {
     public final BigInteger bigInteger;
 
-    private PyLong(BigInteger bigInteger) {
+    protected PyLong(BigInteger bigInteger) {
         this.bigInteger = bigInteger;
     }
 
