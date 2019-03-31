@@ -1,7 +1,9 @@
 package com.github.kb1000.jypy;
 
+import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.Collection;
+import java.util.Iterator;
 import java.util.Map;
 
 import com.github.kb1000.jypy.annotations.NotInPython;
@@ -71,6 +73,22 @@ public final class PyBool extends PyLong {
             return from(!((Collection<?>) value).isEmpty());
         } else if (value instanceof Map<?, ?>) {
             return from(!((Map<?, ?>) value).isEmpty());
+        } else if (value instanceof BigInteger) {
+            return from(!((BigInteger) value).equals(BigInteger.ZERO));
+        } else if (value instanceof BigDecimal) {
+            return from(((BigDecimal) value).compareTo(BigDecimal.ZERO) != 0);
+        } else if (value instanceof Iterator<?>) {
+            return from(((Iterator<?>) value).hasNext());
+        } else if (value instanceof PyList) {
+            return from(!((PyList) value).list.isEmpty());
+        } else if (value instanceof PyUnicode) {
+            return from(((PyUnicode) value).length != 0);
+        } else if (value instanceof PyLong) {
+            return from(!((PyLong) value).bigInteger.equals(BigInteger.ZERO));
+        } else if (value instanceof PyFloat) {
+            return from(((PyFloat) value).value != 0);
+        } else if (value instanceof PyDict) {
+            return from(!((PyDict) value).map.isEmpty());
         }
         return null;
     }

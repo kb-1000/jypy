@@ -7,10 +7,14 @@ import com.github.kb1000.jypy.common.Array;
 
 public class PyUnicode extends PyObject {
     private final int[] codePoints;
-    private int[] publicCodePoints;
+    private transient int[] publicCodePoints;
     public static final PyType TYPE = null; // FIXME(kb1000)
+    @NotInPython(pyObject = true)
+    public final int length;
+
     private PyUnicode(int[] codePoints) {
         this.codePoints = codePoints;
+        this.length = codePoints.length;
     }
 
     public static final PyUnicode EMPTY = new PyUnicode(new int[0]);

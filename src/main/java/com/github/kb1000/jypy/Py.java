@@ -26,6 +26,8 @@ public final class Py {
             return PyFloat.from((Float) it);
         } else if (it instanceof String) {
             return PyUnicode.from((String) it);
+        } else if (it instanceof Boolean) {
+            return PyBool.from((boolean) it);
         }
         return null; // FIXME(kb1000)
     }
