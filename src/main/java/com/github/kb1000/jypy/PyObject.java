@@ -3,8 +3,12 @@ package com.github.kb1000.jypy;
 public class PyObject {
     public PyType __class__;
 
-    public PyObject __add__(final PyObject other) throws JyPyException {
-        throw new JyPyException(); // FIXME(kb1000): add CPython-like exception
+    public PyObject __add__(final Object other) throws JyPyException {
+        return Py.NotImplemented;
+    }
+
+    public PyObject __radd__(final Object other) throws JyPyException {
+        return Py.NotImplemented;
     }
 
     public PyObject __getattribute__(final PyObject attr) throws JyPyException {

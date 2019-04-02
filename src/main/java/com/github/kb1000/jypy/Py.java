@@ -32,6 +32,26 @@ public final class Py {
         return null; // FIXME(kb1000)
     }
 
+    public static Object add(Object first, Object second) throws JyPyException {
+        Object ret = null;
+        if (first instanceof PyObject) {
+            PyObject pyFirst = (PyObject) first;
+            if ((ret = pyFirst.__add__(second)) != NotImplemented) {
+                return ret;
+            }
+        }
+        if (second instanceof PyObject) {
+            PyObject pySecond = (PyObject) second;
+            if ((ret = pySecond.__radd__(first)) != NotImplemented) {
+                return ret;
+            }
+        }
+        if (ret == NotImplemented) {
+            throw new JyPyException(); // FIXME(kb1000): add CPython-like exception
+        }
+        return null; //FIXME(kb1000)
+    }
+
     public static final PyNotImplemented NotImplemented = PyNotImplemented.INSTANCE;
     public static final PyNone None = PyNone.INSTANCE;
     public static final PyEllipsis Ellipsis = PyEllipsis.INSTANCE;

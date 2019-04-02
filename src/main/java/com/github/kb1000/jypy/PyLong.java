@@ -18,7 +18,7 @@ public class PyLong extends PyObject {
     }
 
     @Override
-    public PyObject __add__(PyObject other) {
+    public PyObject __add__(Object other) {
         if (other instanceof PyLong) {
             return from(bigInteger.add(((PyLong) other).bigInteger));
         }

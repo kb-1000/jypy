@@ -39,7 +39,7 @@ public class PyUnicode extends PyObject {
     }
 
     @Override
-    public PyObject __add__(PyObject other) {
+    public PyObject __add__(Object other) {
         if (other instanceof PyUnicode) {
             return fromNoCopy(Array.concat(codePoints, ((PyUnicode) other).codePoints));
         }

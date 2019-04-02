@@ -12,7 +12,7 @@ class PyFloat extends PyObject {
     }
 
     @Override
-    public PyObject __add__(PyObject other) throws JyPyException {
+    public PyObject __add__(Object other) throws JyPyException {
         if (other instanceof PyFloat) {
             return from(value + ((PyFloat) other).value);
         }
@@ -22,7 +22,6 @@ class PyFloat extends PyObject {
                 throw new JyPyException(); // new PyOverflow("int too large to convert to float") // FIXME(kb1000)
             }
             return from(value + otherDouble);
-            
         }
         return Py.NotImplemented;
     }
