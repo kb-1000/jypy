@@ -1,0 +1,3 @@
+# FIXME(kb1000): use Gradle instesd of Maven cache for ANTLR
+java -jar $HOME/.m2/repository/org/antlr/antlr4/4.7.2/antlr4-4.7.2-complete.jar -package com.github.kb1000.jypy.parser.antlr -o build/generated/antlr/main/java -visitor -listener -encoding utf-8 `find src/main/antlr -regex ".*\\.g4"`
+javac -h . -d build/classes/java/main -verbose -cp $HOME/.gradle/caches/modules-2/files-2.1/org.ow2.asm/asm/7.0/d74d4ba0dee443f68fb2dcb7fcdb945a2cd89912/asm-7.0.jar:$HOME/.m2/repository/org/antlr/antlr4-runtime/4.7.2/antlr4-runtime-4.7.2.jar `find build/generated/antlr/main/java src/main/java -regex ".*\\.java" | sort` -Xdiags:verbose -Xlint:all -g

@@ -12,3 +12,4 @@
 .idea/*
 !.idea/codeStyles
 com_github_kb1000_jypy_*.h
+generated
