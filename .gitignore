@@ -9,7 +9,10 @@
 *.s
 *.so
 *.sw[op]
+.gradle
 .idea/*
 !.idea/codeStyles
+/build
+!/gradle/wrapper/gradle-wrapper.jar
 com_github_kb1000_jypy_*.h
 generated
