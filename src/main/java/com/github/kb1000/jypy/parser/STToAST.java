@@ -1,5 +1,6 @@
 package com.github.kb1000.jypy.parser;
 
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Stream;
@@ -8,6 +9,8 @@ import org.antlr.v4.runtime.tree.ParseTree;
 
 import com.github.kb1000.jypy.compiler.CompilerState;
 import com.github.kb1000.jypy.parser.antlr.Python3Parser;
+import com.github.kb1000.jypy.parser.ast.BinOp;
+import com.github.kb1000.jypy.parser.ast.BitOr;
 import com.github.kb1000.jypy.parser.ast.Expr;
 import com.github.kb1000.jypy.parser.ast.IfExp;
 import com.github.kb1000.jypy.parser.ast.Load;
@@ -120,7 +123,13 @@ public final class STToAST {
     }
 
     public static expr process(final CompilerState state, Python3Parser.ExprContext st) {
-        return null; // FIXME(kb1000)
+        List<Python3Parser.Xor_exprContext> xor_exprs = st.xor_expr();
+        Iterator<Python3Parser.Xor_exprContext> iterator = xor_exprs.iterator();
+        expr expression = process(state, iterator.next());
+        while (iterator.hasNext()) {
+            expression = new BinOp(expression, BitOr.INSTANCE, process(state, iterator.next()));
+        }
+        return expression;
     }
 
     public static expr process(final CompilerState state, Python3Parser.Or_testContext st) {
@@ -128,6 +137,10 @@ public final class STToAST {
     }
 
     public static expr process(final CompilerState state, Python3Parser.LambdefContext st) {
+        return null; // FIXME(kb1000)
+    }
+
+    public static expr process(final CompilerState state, Python3Parser.Xor_exprContext st) {
         return null; // FIXME(kb1000)
     }
 }
