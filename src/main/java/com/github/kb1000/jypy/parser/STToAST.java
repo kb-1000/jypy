@@ -6,16 +6,22 @@ import java.util.List;
 import java.util.stream.Stream;
 
 import org.antlr.v4.runtime.tree.ParseTree;
+import org.antlr.v4.runtime.tree.TerminalNode;
 
 import com.github.kb1000.jypy.compiler.CompilerState;
+import com.github.kb1000.jypy.parser.antlr.Python3Lexer;
 import com.github.kb1000.jypy.parser.antlr.Python3Parser;
 import com.github.kb1000.jypy.parser.ast.BinOp;
+import com.github.kb1000.jypy.parser.ast.BitAnd;
 import com.github.kb1000.jypy.parser.ast.BitOr;
+import com.github.kb1000.jypy.parser.ast.BitXor;
 import com.github.kb1000.jypy.parser.ast.Expr;
 import com.github.kb1000.jypy.parser.ast.IfExp;
 import com.github.kb1000.jypy.parser.ast.Load;
+import com.github.kb1000.jypy.parser.ast.LShift;
 import com.github.kb1000.jypy.parser.ast.Module;
 import com.github.kb1000.jypy.parser.ast.Pass;
+import com.github.kb1000.jypy.parser.ast.RShift;
 import com.github.kb1000.jypy.parser.ast.Starred;
 import com.github.kb1000.jypy.parser.ast.Tuple;
 import com.github.kb1000.jypy.parser.ast.expr;
@@ -141,6 +147,42 @@ public final class STToAST {
     }
 
     public static expr process(final CompilerState state, Python3Parser.Xor_exprContext st) {
+        Iterator<Python3Parser.And_exprContext> iterator = st.and_expr().iterator();
+        expr expression = process(state, iterator.next());
+        while (iterator.hasNext()) {
+            expression = new BinOp(expression, BitXor.INSTANCE, process(state, iterator.next()));
+        }
+        return expression;
+    }
+
+    public static expr process(final CompilerState state, Python3Parser.And_exprContext st) {
+        Iterator<Python3Parser.Shift_exprContext> iterator = st.shift_expr().iterator();
+        expr expression = process(state, iterator.next());
+        while (iterator.hasNext()) {
+            expression = new BinOp(expression, BitAnd.INSTANCE, process(state, iterator.next()));
+        }
+        return expression;
+    }
+
+    public static expr process(final CompilerState state, Python3Parser.Shift_exprContext st) {
+        expr expression = process(state, (Python3Parser.Arith_exprContext) st.getChild(0));
+        final int childCount = st.getChildCount();
+        for (int i = 1; i < childCount; i++) {
+            switch (((TerminalNode) st.getChild(i++)).getSymbol().getType()) {
+            case Python3Lexer.LEFT_SHIFT:
+                expression = new BinOp(expression, LShift.INSTANCE, process(state, (Python3Parser.Arith_exprContext) st.getChild(i)));
+                break;
+	    case Python3Lexer.RIGHT_SHIFT:
+                expression = new BinOp(expression, RShift.INSTANCE, process(state, (Python3Parser.Arith_exprContext) st.getChild(i)));
+                break;
+            default:
+                throw new IllegalArgumentException("Broken syntax tree, update STToAST class");
+            }
+        }
+        return expression;
+    }
+
+    public static expr process(final CompilerState state, Python3Parser.Arith_exprContext st) {
         return null; // FIXME(kb1000)
     }
 }
