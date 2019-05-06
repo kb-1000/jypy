@@ -11,21 +11,8 @@ import org.antlr.v4.runtime.tree.TerminalNode;
 import com.github.kb1000.jypy.compiler.CompilerState;
 import com.github.kb1000.jypy.parser.antlr.Python3Lexer;
 import com.github.kb1000.jypy.parser.antlr.Python3Parser;
-import com.github.kb1000.jypy.parser.ast.BinOp;
-import com.github.kb1000.jypy.parser.ast.BitAnd;
-import com.github.kb1000.jypy.parser.ast.BitOr;
-import com.github.kb1000.jypy.parser.ast.BitXor;
-import com.github.kb1000.jypy.parser.ast.Expr;
-import com.github.kb1000.jypy.parser.ast.IfExp;
-import com.github.kb1000.jypy.parser.ast.Load;
-import com.github.kb1000.jypy.parser.ast.LShift;
+import com.github.kb1000.jypy.parser.ast.*;
 import com.github.kb1000.jypy.parser.ast.Module;
-import com.github.kb1000.jypy.parser.ast.Pass;
-import com.github.kb1000.jypy.parser.ast.RShift;
-import com.github.kb1000.jypy.parser.ast.Starred;
-import com.github.kb1000.jypy.parser.ast.Tuple;
-import com.github.kb1000.jypy.parser.ast.expr;
-import com.github.kb1000.jypy.parser.ast.stmt;
 
 public final class STToAST {
     private STToAST() {
@@ -183,6 +170,51 @@ public final class STToAST {
     }
 
     public static expr process(final CompilerState state, Python3Parser.Arith_exprContext st) {
+        expr expression = process(state, (Python3Parser.TermContext) st.getChild(0));
+        final int childCount = st.getChildCount();
+        for (int i = 1; i < childCount; i++) {
+            switch (((TerminalNode) st.getChild(i++)).getSymbol().getType()) {
+            case Python3Lexer.ADD:
+                expression = new BinOp(expression, Add.INSTANCE, process(state, (Python3Parser.TermContext) st.getChild(i)));
+                break;
+	    case Python3Lexer.MINUS:
+                expression = new BinOp(expression, Sub.INSTANCE, process(state, (Python3Parser.TermContext) st.getChild(i)));
+                break;
+            default:
+                throw new IllegalArgumentException("Broken syntax tree, update STToAST class");
+            }
+        }
+        return expression;
+    }
+
+    public static expr process(final CompilerState state, Python3Parser.TermContext st) {
+        expr expression = process(state, (Python3Parser.FactorContext) st.getChild(0));
+        final int childCount = st.getChildCount();
+        for (int i = 1; i < childCount; i++) {
+            switch (((TerminalNode) st.getChild(i++)).getSymbol().getType()) {
+            case Python3Lexer.STAR:
+                expression = new BinOp(expression, Mult.INSTANCE, process(state, (Python3Parser.FactorContext) st.getChild(i)));
+                break;
+	    case Python3Lexer.AT:
+                expression = new BinOp(expression, MatMult.INSTANCE, process(state, (Python3Parser.FactorContext) st.getChild(i)));
+                break;
+	    case Python3Lexer.DIV:
+                expression = new BinOp(expression, Div.INSTANCE, process(state, (Python3Parser.FactorContext) st.getChild(i)));
+                break;
+	    case Python3Lexer.MOD:
+                expression = new BinOp(expression, Mod.INSTANCE, process(state, (Python3Parser.FactorContext) st.getChild(i)));
+                break;
+	    case Python3Lexer.IDIV:
+                expression = new BinOp(expression, FloorDiv.INSTANCE, process(state, (Python3Parser.FactorContext) st.getChild(i)));
+                break;
+            default:
+                throw new IllegalArgumentException("Broken syntax tree, update STToAST class");
+            }
+        }
+        return expression;
+    }
+
+    public static expr process(final CompilerState state, Python3Parser.FactorContext st) {
         return null; // FIXME(kb1000)
     }
 }
