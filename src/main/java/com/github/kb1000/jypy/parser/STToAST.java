@@ -215,6 +215,32 @@ public final class STToAST {
     }
 
     public static expr process(final CompilerState state, Python3Parser.FactorContext st) {
+        Python3Parser.PowerContext power = st.power();
+        if (power == null) {
+            switch (((TerminalNode) st.getChild(0)).getSymbol().getType()) {
+            case Python3Lexer.ADD:
+                return new UnaryOp(UAdd.INSTANCE, process(state, st.factor()));
+            case Python3Lexer.MINUS:
+                return new UnaryOp(USub.INSTANCE, process(state, st.factor()));
+            case Python3Lexer.NOT_OP:
+                return new UnaryOp(Invert.INSTANCE, process(state, st.factor()));
+            default:
+                throw new IllegalArgumentException("Broken syntax tree, uodate STToAST class");
+            }
+        }
+        return process(state, st.power());
+    }
+
+    public static expr process(final CompilerState state, Python3Parser.PowerContext st) {
+        expr expression = process(state, st.atom_expr());
+        Python3Parser.FactorContext factor = st.factor();
+        if (factor != null) {
+            expression = new BinOp(expression, Pow.INSTANCE, process(state, factor));
+        }
+        return expression;
+    }
+
+    public static expr process(final CompilerState state, Python3Parser.Atom_exprContext st) {
         return null; // FIXME(kb1000)
     }
 }
