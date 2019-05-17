@@ -35,7 +35,7 @@ public class PyUnicode2 extends PyObject {
         synchronized (lock) {
             if (evaluated) return;
             int len = buffers.length;
-            if (len != kinds.length) throw new IllegalArgumentException("length of kinds array foes jot match length of buffers array");
+            if (len != kinds.length) throw new IllegalArgumentException("length of kinds array does not match length of buffers array");
             int resultKind = 1;
             for (int kind: kinds) {
                 if (kind > resultKind) {
@@ -69,7 +69,7 @@ public class PyUnicode2 extends PyObject {
                     switch (kind) {
                     case 1:
                         while (buffer.hasRemaining()) {
-                            shortResult.put(buffer.get());
+                            shortResult.put((short)(buffer.get() & ((short) 0xFF)));
                         }
                         break;
                     case 2:
@@ -88,13 +88,13 @@ public class PyUnicode2 extends PyObject {
                     switch (kind) {
                     case 1:
                         while (buffer.hasRemaining()) {
-                            intResult.put(buffer.get());
+                            intResult.put(buffer.get() & ((int) 0xFF));
                         }
                         break;
                     case 2:
                         ShortBuffer shortBuffer = buffer.asShortBuffer();
                         while (buffer.hasRemaining()) {
-                            intResult.put(shortBuffer.get());
+                            intResult.put(shortBuffer.get() & ((int) 0xFFFF));
                         }
                         break;
                     case 4:
