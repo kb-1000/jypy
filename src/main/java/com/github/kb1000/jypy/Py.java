@@ -13,17 +13,17 @@ public final class Py {
         } else if (it instanceof BigInteger) {
             return PyLong.from((BigInteger) it);
         } else if (it instanceof Integer) {
-            return PyLong.from((Integer) it);
+            return PyLong.from((int) it);
         } else if (it instanceof Short) {
-            return PyLong.from((Short) it);
+            return PyLong.from((short) it);
         } else if (it instanceof Long) {
-            return PyLong.from((Long) it);
+            return PyLong.from((long) it);
         } else if (it instanceof Byte) {
-            return PyLong.from((Byte) it);
+            return PyLong.from((byte) it);
         } else if (it instanceof Double) {
-            return PyFloat.from((Double) it);
+            return PyFloat.from((double) it);
         } else if (it instanceof Float) {
-            return PyFloat.from((Float) it);
+            return PyFloat.from((float) it);
         } else if (it instanceof String) {
             return PyUnicode.from((String) it);
         } else if (it instanceof Boolean) {

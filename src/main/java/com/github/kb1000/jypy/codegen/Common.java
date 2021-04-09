@@ -68,7 +68,7 @@ public final class Common {
         } else {
             try {
                 Files2.write(Arrays.stream((getInternalName(data) + ".class").split("/")).map(Paths::get).reduce(dump, Path::resolve, Path::resolve), data, true);
-	    } catch (IOException e) {
+            } catch (IOException e) {
                 throw new JyPyException(e);
             }
             return loader.defineCodegenClass(data, referred);

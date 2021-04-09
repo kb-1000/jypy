@@ -75,9 +75,9 @@ public final class STToAST {
         int childCount = st.getChildCount();
         if (childCount == 1) {
             ParseTree child = st.getChild(0);
-	    if (child instanceof Python3Parser.TestContext) {
+            if (child instanceof Python3Parser.TestContext) {
                 return process(state, (Python3Parser.TestContext) child);
-	    } else { // has to be star_expr then
+            } else { // has to be star_expr then
                 return process(state, (Python3Parser.Star_exprContext) child);
             }
         } else {
@@ -159,7 +159,7 @@ public final class STToAST {
             case Python3Lexer.LEFT_SHIFT:
                 expression = new BinOp(expression, LShift.INSTANCE, process(state, (Python3Parser.Arith_exprContext) st.getChild(i)));
                 break;
-	    case Python3Lexer.RIGHT_SHIFT:
+            case Python3Lexer.RIGHT_SHIFT:
                 expression = new BinOp(expression, RShift.INSTANCE, process(state, (Python3Parser.Arith_exprContext) st.getChild(i)));
                 break;
             default:
@@ -177,7 +177,7 @@ public final class STToAST {
             case Python3Lexer.ADD:
                 expression = new BinOp(expression, Add.INSTANCE, process(state, (Python3Parser.TermContext) st.getChild(i)));
                 break;
-	    case Python3Lexer.MINUS:
+            case Python3Lexer.MINUS:
                 expression = new BinOp(expression, Sub.INSTANCE, process(state, (Python3Parser.TermContext) st.getChild(i)));
                 break;
             default:
@@ -195,16 +195,16 @@ public final class STToAST {
             case Python3Lexer.STAR:
                 expression = new BinOp(expression, Mult.INSTANCE, process(state, (Python3Parser.FactorContext) st.getChild(i)));
                 break;
-	    case Python3Lexer.AT:
+            case Python3Lexer.AT:
                 expression = new BinOp(expression, MatMult.INSTANCE, process(state, (Python3Parser.FactorContext) st.getChild(i)));
                 break;
-	    case Python3Lexer.DIV:
+            case Python3Lexer.DIV:
                 expression = new BinOp(expression, Div.INSTANCE, process(state, (Python3Parser.FactorContext) st.getChild(i)));
                 break;
-	    case Python3Lexer.MOD:
+            case Python3Lexer.MOD:
                 expression = new BinOp(expression, Mod.INSTANCE, process(state, (Python3Parser.FactorContext) st.getChild(i)));
                 break;
-	    case Python3Lexer.IDIV:
+            case Python3Lexer.IDIV:
                 expression = new BinOp(expression, FloorDiv.INSTANCE, process(state, (Python3Parser.FactorContext) st.getChild(i)));
                 break;
             default:

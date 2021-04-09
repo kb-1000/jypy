@@ -16,19 +16,18 @@ public class PyList extends PyObject {
         this.list = new ArrayList<>();
     }
 
-    @SuppressWarnings("unchecked")
-    public PyList(Iterable<? extends Object> iterable) {
+    public PyList(Iterable<?> iterable) {
         if (iterable instanceof Collection<?>) {
-            this.list = new ArrayList<Object>((Collection<? extends Object>) iterable);
+            this.list = new ArrayList<>((Collection<?>) iterable);
         } else {
-            List<Object> list = new ArrayList<Object>();
+            List<Object> list = new ArrayList<>();
             iterable.forEach(list::add);
             this.list = list;
         }
     }
 
     public PyList(Object... objects) {
-        this.list = new ArrayList<Object>(Arrays.asList(objects));
+        this.list = new ArrayList<>(Arrays.asList(objects));
     }
 
     public PyList(PyObject iterable) {

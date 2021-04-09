@@ -19,7 +19,7 @@ public class PyUnicode2 extends PyObject {
     /**
      * When you modify this, you might waste memory by copying the data again.
      * If you set this to {@code true}, when it should be {@code false}, you will
-     * get undefined behavior and very likely unexpected and unwanted behavior.
+     * get undefined and very likely unexpected and unwanted behavior.
      */
     private boolean evaluated = false;
 
@@ -55,7 +55,7 @@ public class PyUnicode2 extends PyObject {
         }
         if (!hasSurrogates) {
             return new PyUnicode2(new ByteBuffer[] { buf }, new int[] { 2 });
-	} else {
+        } else {
             List<ByteBuffer> slices = new ArrayList<>();
             int start = 0;
             boolean startsWithSurrogate = i == 0;
@@ -134,7 +134,7 @@ public class PyUnicode2 extends PyObject {
                 }
                 result.rewind();
                 break;
-	    case 2:
+            case 2:
                 ShortBuffer shortResult = result.asShortBuffer();
                 for (int i = 0; i < len; i++) {
                     ByteBuffer buffer = localBuffers[i].asReadOnlyBuffer(); // to prevent side effects from modifying the position

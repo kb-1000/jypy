@@ -10,7 +10,8 @@ import com.github.kb1000.jypy.annotations.NotInPython;
 
 public final class PyBool extends PyLong {
     /**
-     * Do not ever use this, whether using reflection or anything else!
+     * Do not create any additional instances. Doing so may corrupt the interpreter state, and <strong>will</strong>
+     * cause wrong behavior on the newly created instance. You have been warned.
      */
     private PyBool(boolean value) {
         super(BigInteger.valueOf(value ? 1 : 0));
@@ -29,22 +30,22 @@ public final class PyBool extends PyLong {
     }
 
     public static PyBool from(Object value) throws JyPyException {
-        if (value == null || value instanceof PyNone) {
+        if (value == null || value == Py.None) {
             return from(false);
-	} else if (value instanceof Boolean) {
+        } else if (value instanceof Boolean) {
             return from((boolean) value);
         } else if (value instanceof PyBool) {
             return from(((PyBool) value).toBoolean());
         } else if (value instanceof Integer) {
-            return from(((Integer) value) != 0);
+            return from(((int) value) != 0);
         } else if (value instanceof Long) {
-            return from(((Long) value) != 0);
+            return from(((long) value) != 0);
         } else if (value instanceof Short) {
-            return from(((Short) value) != 0);
+            return from(((short) value) != 0);
         } else if (value instanceof Byte) {
-            return from(((Byte) value) != 0);
-        } else if (value instanceof Character || value instanceof PyEllipsis || value instanceof PyNotImplemented) {
-            return from(true); // A character represents a single-character string in Python, which has always length 1 and is thus true
+            return from(((byte) value) != 0);
+        } else if (value instanceof Character || value == Py.Ellipsis || value == Py.NotImplemented) {
+            return from(true); // A character represents a single-character string in Python, which always has length 1 and is thus true
         } else if (value instanceof Float) {
             return from(((Float) value) != 0);
         } else if (value instanceof Double) {
@@ -74,7 +75,7 @@ public final class PyBool extends PyLong {
         } else if (value instanceof Map<?, ?>) {
             return from(!((Map<?, ?>) value).isEmpty());
         } else if (value instanceof BigInteger) {
-            return from(!((BigInteger) value).equals(BigInteger.ZERO));
+            return from(!value.equals(BigInteger.ZERO));
         } else if (value instanceof BigDecimal) {
             return from(((BigDecimal) value).compareTo(BigDecimal.ZERO) != 0);
         } else if (value instanceof Iterator<?>) {
