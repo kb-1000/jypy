@@ -33,4 +33,9 @@ public final class Array {
         System.arraycopy(b, 0, result, a.length, b.length);
         return result;
     }
+
+    @SafeVarargs
+    public static <T> T[] of(T... args) {
+        return args;
+    }
 }

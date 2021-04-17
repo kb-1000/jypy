@@ -10,6 +10,9 @@ import java.util.List;
 import com.github.kb1000.jypy.common.Array;
 
 public class PyUnicode2 extends PyObject {
+    /**
+     * Do not modify. You might break everything that way. Modifying this is about as safe as modifying a java.lang.String.
+     */
     private ByteBuffer[] buffers;
     private int[] kinds;
     private static final Object lock = new Object();
@@ -26,6 +29,7 @@ public class PyUnicode2 extends PyObject {
     public PyUnicode2() {
         buffers = new ByteBuffer[0];
         kinds = new int[0];
+        evaluated = true;
     }
 
     private PyUnicode2(ByteBuffer[] buffers, int[] kinds) {
@@ -34,12 +38,16 @@ public class PyUnicode2 extends PyObject {
     }
 
     public static PyUnicode2 fromUCS2(String ucs2) {
+        if (ucs2.length() == 0)
+            return new PyUnicode2();
         ByteBuffer buf = ByteBuffer.allocate(ucs2.length() * 2);
         buf.asCharBuffer().put(CharBuffer.wrap(ucs2.toCharArray())); // TODO(kb1000): test whether this actually works, on BE and on LE
         return new PyUnicode2(new ByteBuffer[] { buf }, new int[] { 2 });
     }
 
     public static PyUnicode2 fromUTF16(String utf16) {
+        if (utf16.length() == 0)
+            return new PyUnicode2();
         char[] chars = utf16.toCharArray();
         int len = chars.length;
         ByteBuffer buf = ByteBuffer.allocate(len * 2);
@@ -109,6 +117,8 @@ public class PyUnicode2 extends PyObject {
             if (evaluated) return;
             int len = buffers.length;
             if (len != kinds.length) throw new IllegalArgumentException("length of kinds array does not match length of buffers array");
+            if (len == 0)
+                evaluated = true;
             int resultKind = 1;
             for (int kind: kinds) {
                 if (kind > resultKind) {
@@ -161,13 +171,13 @@ public class PyUnicode2 extends PyObject {
                     switch (kind) {
                     case 1:
                         while (buffer.hasRemaining()) {
-                            intResult.put(buffer.get() & ((int) 0xFF));
+                            intResult.put(buffer.get() & 0xFF);
                         }
                         break;
                     case 2:
                         ShortBuffer shortBuffer = buffer.asShortBuffer();
                         while (shortBuffer.hasRemaining()) {
-                            intResult.put(shortBuffer.get() & ((int) 0xFFFF));
+                            intResult.put(shortBuffer.get() & 0xFFFF);
                         }
                         break;
                     case 4:
@@ -181,6 +191,7 @@ public class PyUnicode2 extends PyObject {
             }
             kinds = new int[] { resultKind };
             buffers = new ByteBuffer[] { result };
+            evaluated = true;
         }
     }
 

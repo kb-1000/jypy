@@ -4,15 +4,15 @@ import java.util.function.*;
 
 public final class ThrowingHelpers {
     @FunctionalInterface
-    public interface ThrowingFunction<T, R> {
-        public R apply(T t) throws Exception;
+    public interface ThrowingFunction<T, R, E extends Throwable> {
+        R apply(T t) throws E;
     }
 
-    public static <T, R> Function<T, R> unchecked(ThrowingFunction<T, R> checked) {
+    public static <T, R, E extends Throwable> Function<T, R> unchecked(ThrowingFunction<T, R, E> checked) {
         return t -> {
             try {
                 return checked.apply(t);
-            } catch (Exception e) {
+            } catch (Throwable e) {
                 return sneakyThrow(e);
             }
         };

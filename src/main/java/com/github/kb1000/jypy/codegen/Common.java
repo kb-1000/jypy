@@ -2,22 +2,18 @@ package com.github.kb1000.jypy.codegen;
 
 import java.io.IOException;
 import java.lang.reflect.Array;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
 import java.util.Arrays;
 import java.util.HashMap;
-import java.util.Map;
 import java.util.Optional;
 
-import com.github.kb1000.jypy.common.Files2;
-import com.github.kb1000.jypy.common.Reference;
-import com.github.kb1000.jypy.JyPyException;
-
 import org.objectweb.asm.ClassReader;
-import org.objectweb.asm.Opcodes;
+
+import com.github.kb1000.jypy.JyPyException;
+import com.github.kb1000.jypy.common.Files2;
 
 public final class Common {
     static CodegenClassLoader loader;
@@ -63,16 +59,14 @@ public final class Common {
      */
     static Class<?> defineClass(byte[] data, Class<?>... referred) throws JyPyException {
         checkLoaderInitialized();
-        if (dump == null) {
-            return loader.defineCodegenClass(data, referred);
-        } else {
+        if (dump != null) {
             try {
                 Files2.write(Arrays.stream((getInternalName(data) + ".class").split("/")).map(Paths::get).reduce(dump, Path::resolve, Path::resolve), data, true);
             } catch (IOException e) {
                 throw new JyPyException(e);
             }
-            return loader.defineCodegenClass(data, referred);
         }
+        return loader.defineCodegenClass(data, referred);
     }
 
     private static void checkLoaderInitialized() {

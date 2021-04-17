@@ -3,14 +3,12 @@ package com.github.kb1000.jypy.codegen;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Modifier;
 import java.lang.reflect.Parameter;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Optional;
-import java.util.StringJoiner;
+import java.util.*;
 import java.util.stream.Stream;
 
 import com.github.kb1000.jypy.JyPyException;
 import com.github.kb1000.jypy.PyObject;
+import com.github.kb1000.jypy.common.Array;
 import com.github.kb1000.jypy.common.Constants;
 import com.github.kb1000.jypy.common.ThrowingHelpers;
 
@@ -46,21 +44,20 @@ public final class PyJavaWrapperGenerator {
 
         superclass = Optional.<Class<?>>ofNullable(superclass).orElse(Object.class);
 
-        @SuppressWarnings("unchecked") // Why the hell is this even then unchecked when creating an array of Stream<Class<?>> instead...
-        Class<?>[] intermediateNewClasses = Arrays.stream((Stream<Class<?>>[]) new Stream<?>[] {(Stream<Class<?>>) Optional.ofNullable(superclass).stream(), Arrays.stream(classes).filter(Class::isInterface).distinct() }).flatMap(stream -> stream).toArray(Constants.newClassArray);
+        Class<?>[] intermediateNewClasses = Arrays.stream(Array.of(Optional.ofNullable(superclass).stream(), Arrays.stream(classes).filter(Class::isInterface).distinct())).flatMap(stream -> stream).toArray(Constants.newClassArray);
 
         {
             int len = intermediateNewClasses.length;
             for (int i = 0; i < len; i++) {
                 final int i2 = i;
-                if (Arrays.stream(intermediateNewClasses).filter(clazz -> clazz != null && clazz != intermediateNewClasses[i2] && intermediateNewClasses[i2].isAssignableFrom(clazz)).count() != 0) {
+                if (Arrays.stream(intermediateNewClasses).anyMatch(clazz -> clazz != null && clazz != intermediateNewClasses[i2] && intermediateNewClasses[i2].isAssignableFrom(clazz))) {
                     intermediateNewClasses[i] = null;
                 }
             }
         }
 
         Class<?>[] newClasses = Arrays.stream(intermediateNewClasses).filter(Constants.nonNullPredicate()).toArray(Constants.newClassArray);
-        Arrays.sort(newClasses, 1, newClasses.length, (c1, c2) -> c1.getName().compareTo(c2.getName()));
+        Arrays.sort(newClasses, 1, newClasses.length, Comparator.comparing(Class::getName));
 
         synchronized (cache) {
             return cache.computeIfAbsent(newClasses, ThrowingHelpers.unchecked(PyJavaWrapperGenerator::makeClass));
