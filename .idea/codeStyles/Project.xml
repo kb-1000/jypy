@@ -22,5 +22,8 @@
         </value>
       </option>
     </JavaCodeStyleSettings>
+    <codeStyleSettings language="JAVA">
+      <option name="INDENT_CASE_FROM_SWITCH" value="false" />
+    </codeStyleSettings>
   </code_scheme>
 </component>

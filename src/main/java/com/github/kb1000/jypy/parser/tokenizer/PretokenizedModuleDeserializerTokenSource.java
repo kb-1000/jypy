@@ -18,6 +18,7 @@ import org.antlr.v4.runtime.TokenFactory;
 import org.antlr.v4.runtime.TokenSource;
 import org.antlr.v4.runtime.misc.Pair;
 
+import com.github.kb1000.jypy.parser.antlr.Python3;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
@@ -59,7 +60,11 @@ public class PretokenizedModuleDeserializerTokenSource implements TokenSource {
         if (tokenIterator.hasNext()) {
             final TokenInfo token = tokenIterator.next();
             this.lastTokenInfo = token;
-            return lastToken = tokenFactory.create(new Pair<>(this, charStream), token.getType(), token.getString(), Token.DEFAULT_CHANNEL, -1, -1, token.getStart().getLine(), token.getStart().getColumn());
+            int type = token.getType();
+            if (type == Python3.NAME) {
+                type = IdentifierConverter.convertKeyword(token.getString());
+            }
+            return lastToken = tokenFactory.create(new Pair<>(this, charStream), type, token.getString(), Token.DEFAULT_CHANNEL, -1, -1, token.getStart().getLine(), token.getStart().getColumn());
         } else {
             return lastToken;
         }

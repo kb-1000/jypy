@@ -1,3 +1,4 @@
+!/gradle/wrapper/gradle-wrapper.jar
 *.bc
 *.class
 *.i
@@ -6,6 +7,7 @@
 *.js
 *.ll
 *.o
+*.py[cdo]
 *.s
 *.so
 *.sw[op]
@@ -13,6 +15,6 @@
 .idea/*
 !.idea/codeStyles
 /build
-!/gradle/wrapper/gradle-wrapper.jar
-com_github_kb1000_jypy_*.h
+/src/main/gen/
+__pycache__
 generated

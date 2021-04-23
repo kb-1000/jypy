@@ -45,8 +45,13 @@ tasks.withType<Javadoc> {
 }
 
 tasks.withType<AntlrTask> {
-    arguments = arguments + listOf("-package", "com.github.kb1000.jypy.parser.antlr", "-visitor", "-listener")
+    arguments = arguments + listOf("-package", "com.github.kb1000.jypy.parser.antlr", "-visitor", "-listener", "-lib", file("src/main/antlr").absolutePath)
     outputDirectory = File(File(File(File(File(File(outputDirectory, "com"), "github"), "kb1000"), "jypy"), "parser"), "antlr")
+}
+
+tasks.processResources {
+    exclude("**/*.pyc")
+    exclude("**/__pycache__")
 }
 
 tasks.jar {
